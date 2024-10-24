@@ -21,7 +21,7 @@ module bluefin_spot::gateway {
     /// Allows caller to create a pool on Bluefin spot
     /// Any one can invoke the method to create a pool. Note that the creator can only specify
     /// the fee bases points, the protocol fee % of the fee is fixed to 25% and can not be changed by the creator.
-    /// Emits `PoolCreated` event
+    /// 
     /// Parameters:
     /// - clock              : Sui clock object
     /// - pool_name          : The name of the pool. The convention used on bluefin spot is `CoinA-CoinB` 
@@ -56,14 +56,13 @@ module bluefin_spot::gateway {
         tick_spacing: u32, 
         fee_basis_points: u64, 
         current_sqrt_price: u128, 
-        ctx: &mut TxContext
-        ){
-        
+        ctx: &mut TxContext){        
         abort 0
     }
     
     /// Allows caller to provide liquidity to a pool on exchange without specifying the 
     /// exact coin A or coin B amounts. 
+    /// 
     /// Parameters:
     /// - clock              : Sui clock object
     /// - protocol_config    : The `config::GlobalConfig` object used for version verification
@@ -88,7 +87,6 @@ module bluefin_spot::gateway {
         coin_b_min: u64,
         liquidity: u128, 
         ctx: &mut TxContext) {
-
         abort 0
 
     }
@@ -106,6 +104,7 @@ module bluefin_spot::gateway {
     /// - amount             : The amount of Coin A or Coin B to be provided
     /// - coin_a_max         : The maximum amount of Coin A, the user wants to provide (Used for slippage check)
     /// - coin_b_max         : The maximum amount of Coin B, the user wants to provide (Used for slippage check)
+    /// - is_fixed_a         : True if the amount provided belongs to token A
     /// - ctx                : Murable reference to caller's transaction context
     /// 
     /// Events Emitted       : LiquidityProvided
@@ -121,7 +120,6 @@ module bluefin_spot::gateway {
         coin_b_max: u64,
         is_fixed_a: bool,
         ctx: &mut TxContext) {
-
         abort 0
 
     }
@@ -153,10 +151,7 @@ module bluefin_spot::gateway {
         min_coins_b: u64,
         destination: address,
         ctx: &mut TxContext) {
-
-
         abort 0
-
     }
 
     /// Allows caller to close their position. If there is any liquidity or fee accrued 
@@ -188,7 +183,7 @@ module bluefin_spot::gateway {
     /// Parameters:
     /// - clock                 : Sui clock object
     /// - protocol_config       : The `config::GlobalConfig` object used for version verification
-    /// - pool                  : Mutable reference to the pool to which liquidity is to be provided
+    /// - pool                  : Mutable reference to the pool on which to perform swap
     /// - coin_a                : The coin A object. It will be ZERO if swapping from b2a
     /// - coin_b                : The coin B object. It will be ZERO if swapping from a2b
     /// - a2b                   : True if direction of swap is from token A to B
@@ -211,9 +206,7 @@ module bluefin_spot::gateway {
         amount_limit: u64,
         sqrt_price_max_limit: u128,
         ctx: &mut TxContext) {
-
         abort 0
-        
     }
 
 
@@ -233,8 +226,7 @@ module bluefin_spot::gateway {
         protocol_config: &GlobalConfig, 
         pool: &mut Pool<CoinTypeA, CoinTypeB>,
         position: &mut Position,
-        ctx: &mut TxContext
-     ){
+        ctx: &mut TxContext) {
         abort 0
      }
 
@@ -254,10 +246,7 @@ module bluefin_spot::gateway {
         protocol_config: &GlobalConfig, 
         pool: &mut Pool<CoinTypeA, CoinTypeB>,
         position: &mut Position,
-        ctx: &mut TxContext
-        ){
-
-        abort 0
-        
+        ctx: &mut TxContext) {
+        abort 0        
     }
 }

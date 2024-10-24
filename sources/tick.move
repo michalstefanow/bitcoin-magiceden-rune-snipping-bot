@@ -2,23 +2,26 @@
 
 #[allow(unused_field, unused_variable,unused_type_parameter, unused_mut_parameter)]
 /// Tick Module
+/// The module is responsible for creating/managing/manipluating ticks information
 module bluefin_spot::tick {
-    use sui::table::{ Table};
-    use integer_mate::i32::{ I32};
-    use integer_mate::i128::{ I128};
-    use integer_mate::i64::{ I64};
+    use sui::table::{Table};
+    use integer_mate::i32::{I32};
+    use integer_mate::i128::{I128};
+    use integer_mate::i64::{I64};
 
     //===========================================================//
     //                           Structs                         //
     //===========================================================//
 
     /// Ticks manager
+    /// Stores all current ticks and their bitmap
     struct TickManager has store {
         tick_spacing: u32,
         ticks: Table<I32, TickInfo>,                    
         bitmap: Table<I32, u256>,
     }
 
+    /// Struct representing a single Tick
     struct TickInfo has copy, drop, store {
         index: I32, 
         sqrt_price: u128,

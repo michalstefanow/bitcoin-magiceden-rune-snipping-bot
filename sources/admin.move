@@ -37,7 +37,6 @@ module bluefin_spot::admin {
             blue_reward_amount: u64,
             clock: &Clock,
             ctx: &mut TxContext) {
-            
             abort 0
         }
 
@@ -61,7 +60,6 @@ module bluefin_spot::admin {
         blue_reward_amount: u64,
         clock: &Clock, 
         ctx: &TxContext) {
-
         abort 0
     }
     
@@ -81,7 +79,6 @@ module bluefin_spot::admin {
         seconds_to_add: u64, 
         clock: &Clock, 
         ctx: &TxContext) {
-
         abort 0
     }
 }

@@ -1,7 +1,10 @@
 // Copyright (c) Seed Labs
 
 #[allow(unused_field, unused_variable,unused_type_parameter, unused_mut_parameter)]
-/// Module for managing a position
+/// Positions Module
+/// Module for managing positions on bluefin spot. A user is required to first open a position
+/// on bluefin spot's pools before being able to provide liquidity. 
+/// Each position is a SUI object/NFT and the owner of the object/NFT is the liquidity provider
 module bluefin_spot::position {
     use sui::object::{ UID, ID};
     use std::string::{ String};
@@ -11,10 +14,7 @@ module bluefin_spot::position {
     //                          Structs                          //
     //===========================================================//
 
-    struct POSITION has drop {
-        dummy_field: bool
-    }
-
+    /// Bluefrin Spot position struct
     struct Position has key, store {
         id: UID,
         pool_id: ID,
@@ -35,6 +35,8 @@ module bluefin_spot::position {
         reward_infos: vector<PositionRewardInfo>
     }
 
+    /// The rewards info of an individual reward coin. Each position stores a vector of reward info for
+    /// each reward token that is given out by the pool on which the position exists
     struct PositionRewardInfo has copy, drop, store {
         reward_growth_inside_last: u128,
         coins_owed_reward: u64,
