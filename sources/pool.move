@@ -417,10 +417,8 @@ module bluefin_spot::pool {
         abort 0
     }
 
-    /// Allows caller to close an existing position on a pool. If the position has any residual fees accrued or liquidity
-    /// it will be returned by the method and the position object/NFT is destroyed.
-    /// @notice the uer must remove all the rewards accured in their position before closing it. This method will
-    /// revert if the user has reidual rewards in their position.
+    /// Allows caller to close an existing position on a pool. If the position has any residual 
+    /// fees/rewards accrued or liquidity in the position, the call will revert
     /// 
     /// Parameters:
     /// - clock                 : Sui clock object
@@ -428,12 +426,12 @@ module bluefin_spot::pool {
     /// - pool                  : Mutable reference to the pool on which the position is being closed
     /// - position              : The object of the position being closed.
     /// 
-    /// Events Emitted          : PositionClosed | LiquidityRemoved | UserFeeCollected
-    public fun close_position<CoinTypeA, CoinTypeB>(
+    /// Events Emitted          : PositionClosed
+    public fun close_position_v2<CoinTypeA, CoinTypeB>(
         clock: &Clock,
         protocol_config: &GlobalConfig,
         pool: &mut Pool<CoinTypeA, CoinTypeB>,
-        position: Position): (Balance<CoinTypeA>, Balance<CoinTypeB>){
+        position: Position){
         abort 0
     }    
 
@@ -484,7 +482,7 @@ module bluefin_spot::pool {
 
     /// Returns the amount to be paid for the flash swap
     public fun swap_pay_amount<CoinTypeA, CoinTypeB>(receipt: &FlashSwapReceipt<CoinTypeA, CoinTypeB>) : u64 {
-        receipt.pay_amount
+        abort 0
     }
 
     /// Returns the address of current pool' manager
@@ -494,38 +492,39 @@ module bluefin_spot::pool {
 
     /// Returns the accrued protocol fee for coin A
     public fun get_protocol_fee_for_coin_a<CoinTypeA, CoinTypeB>(pool: &Pool<CoinTypeA, CoinTypeB>): u64 {
-        pool.protocol_fee_coin_a
+        abort 0
     }
 
     /// Returns the accrued protocol fee for coin B
     public fun get_protocol_fee_for_coin_b<CoinTypeA, CoinTypeB>(pool: &Pool<CoinTypeA, CoinTypeB>): u64 {
-        pool.protocol_fee_coin_b
+        abort 0
     }
 
+    /// Returns current pool liquidity
     public fun liquidity<CoinTypeA, CoinTypeB>(
         pool: &Pool<CoinTypeA, CoinTypeB>
     ): u128 {
-        pool.liquidity
+        abort 0
     }
 
+    /// Returns current sqrt price of the pool
     public fun current_sqrt_price<CoinTypeA, CoinTypeB>(
         pool: &Pool<CoinTypeA, CoinTypeB>
     ): u128 {
-        pool.current_sqrt_price
+        abort 0
     }
 
-    public fun current_tick_index<CoinTypeA, CoinTypeB>(
-        pool: &Pool<CoinTypeA, CoinTypeB>
-    ): I32 {
-        pool.current_tick_index
+    /// Returns the current tick index of the pool
+    public fun current_tick_index<CoinTypeA, CoinTypeB>( pool: &Pool<CoinTypeA, CoinTypeB>): I32 {
+        abort 0
     }
 
-    public fun sequence_number<CoinTypeA, CoinTypeB>(
-        pool: &Pool<CoinTypeA, CoinTypeB>
-    ): u128 {
-        pool.sequence_number
+    /// Returns the current sequence number of the pool
+    public fun sequence_number<CoinTypeA, CoinTypeB>(pool: &Pool<CoinTypeA, CoinTypeB>): u128 {
+        abort 0
     }
 
+    /// Verifies if the given address is pool manager or not
     public fun verify_pool_manager<CoinTypeA, CoinTypeB>(pool: &Pool<CoinTypeA, CoinTypeB>, manager: address): bool {
         abort 0
     }
@@ -533,4 +532,24 @@ module bluefin_spot::pool {
     public fun coin_reserves<CoinTypeA, CoinTypeB> (pool: &Pool<CoinTypeA, CoinTypeB>): (u64, u64){
         abort 0
     }
+
+    /// Returns the protocol fee share on the pool
+    public fun protocol_fee_share<CoinTypeA, CoinTypeB> (pool: &Pool<CoinTypeA, CoinTypeB>): u64 {
+        abort 0
+    }
+
+    /// Returns the number of unique rewards currently set on the pool
+    public fun reward_infos_length<CoinTypeA, CoinTypeB>(pool: &Pool<CoinTypeA, CoinTypeB>) : u64 {
+        abort 0
+    }
+
+    /// Returns true if the pool emits the provided reward
+    /// @notice if the reward's epoch has ended, the reward info still persists on the pool. Thus
+    /// the method will return true even after reward emission has finished until the admin removes the reward
+    /// info from the pool
+    public fun is_reward_present<CoinTypeA, CoinTypeB, RewardCoinType>(pool: &Pool<CoinTypeA, CoinTypeB>): bool {        
+        abort 0  
+    }
+   
+
 }

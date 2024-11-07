@@ -9,4 +9,4 @@ CetusClmm = { git = "https://github.com/CetusProtocol/cetus-clmm-interface.git",
 IntegerMate = { git = "https://github.com/CetusProtocol/integer-mate.git", subdir = "sui", rev = "mainnet-v1.23.1" }
 
 [addresses]
-bluefin_spot = "0x3492c874c1e3b3e2984e8c41b589e642d4d0a5d6459e5a9cfc2d52fd7c89c267"
+bluefin_spot = "0xf1962ddb76a7f9968b4e597278d3cc717a00620cc421b00e3429c5c071eba26a"
