@@ -6,10 +6,10 @@
 module bluefin_spot::constants {
      use std::string::{String};
 
-    /// Default (25%) protocol fee share of total fee rate
+    /// Default (20%) protocol fee share of total fee rate
     /// The protocol fee is in 1e6 base
     /// The admin of the protcool can choose to reduce protocol fee rate for a specific pool
-    const PROTOCOL_FEE_SHARE: u64 = 250000;
+    const PROTOCOL_FEE_SHARE: u64 = 200000;
     
     const Q64: u128 = 18446744073709551616;
 
@@ -19,7 +19,7 @@ module bluefin_spot::constants {
 
     const MAX_U32: u32 = 0xffffffff;
 
-    const MAX_U64: u64 = 0xfffffffffffffff;
+    const MAX_U64: u64 = 0xffffffffffffffff;
 
     const MAX_U128: u128 = 0xffffffffffffffffffffffffffffffff;
 

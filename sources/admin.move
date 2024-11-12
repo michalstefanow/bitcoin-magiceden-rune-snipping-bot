@@ -21,7 +21,7 @@ module bluefin_spot::admin {
     /// - start_time          : start time for the rewards that are to be initilized (must be in future)
     /// - active_for_seconds  : seconds for which rewards are to be allocated.
     /// - reward_coin         : coin Object with balance for the reward that is to be initialized
-    /// - blue_reward_amount  : amount of blue rewards (should be 0 in case the reward to be initialized is not Blue Coin)
+    /// - reward_amount       : amount of rewards to be given out
     /// - clock               : sui clock object
     /// - ctx                 : Murable reference to caller's transaction context
     /// 
@@ -34,7 +34,7 @@ module bluefin_spot::admin {
             reward_coin: Coin<RewardCoinType>, 
             reward_coin_symbol: String,
             reward_coin_decimals: u8,
-            blue_reward_amount: u64,
+            reward_amount: u64,
             clock: &Clock,
             ctx: &mut TxContext) {
             abort 0
@@ -47,7 +47,7 @@ module bluefin_spot::admin {
     /// - pool                 : pool object
     /// - active_for_seconds   : seconds for which rewards are to be allocated.
     /// - reward_coin          : coin Object with balance for the reward that is to be initialized
-    /// - blue_reward_amount   : amount of blue rewards (should be 0 in case the reward to be initialized is not Blue Coin)
+    /// - reward_amount        : amount of rewards to be given out
     /// - clock                : sui clock object
     /// - ctx                  : Murable reference to caller's transaction context
     /// 
@@ -57,7 +57,7 @@ module bluefin_spot::admin {
         pool: &mut  Pool<CoinTypeA, CoinTypeB>, 
         active_for_seconds: u64, 
         reward_coin: Coin<RewardCoinType>,
-        blue_reward_amount: u64,
+        reward_amount: u64,
         clock: &Clock, 
         ctx: &TxContext) {
         abort 0
