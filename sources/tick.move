@@ -80,4 +80,8 @@ module bluefin_spot::tick {
         &manager.bitmap
     }   
 
+    public fun fetch_provided_ticks(manager: &TickManager, ticks: vector<u32>): vector<TickInfo> {
+       abort 0
+    }
+
 }

@@ -15,7 +15,7 @@ module bluefin_spot::pool {
     use sui::clock::{Clock};
     use bluefin_spot::config::{GlobalConfig};
     use bluefin_spot::position::{Position};
-    use bluefin_spot::tick::{TickManager};
+    use bluefin_spot::tick::{TickManager, TickInfo};
     use bluefin_spot::oracle::{ObservationManager};
     use integer_mate::i32::{I32};
     
@@ -549,6 +549,17 @@ module bluefin_spot::pool {
     /// info from the pool
     public fun is_reward_present<CoinTypeA, CoinTypeB, RewardCoinType>(pool: &Pool<CoinTypeA, CoinTypeB>): bool {        
         abort 0  
+    }
+
+    /// Returns the tick manager non-mutable reference
+    public fun get_tick_manager<CoinTypeA, CoinTypeB>(pool: &Pool<CoinTypeA, CoinTypeB>): &TickManager{
+        abort 0
+    }
+
+    /// Given a list of tick index bits, returns the tick info
+    /// for the provided tick bits if initialized
+    public fun fetch_provided_ticks<CoinTypeA, CoinTypeB>(pool: &Pool<CoinTypeA, CoinTypeB>, ticks:vector<u32>): vector<TickInfo>{
+        abort 0
     }
    
 
