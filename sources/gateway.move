@@ -5,7 +5,7 @@
 /// This module is for interacting with the core protocol. There is no logic with in this module.
 /// Exposes methods for front-end users to add/remove liquidity or close positions or perform swaps
 /// If you are interacting through contracts, best not to use this module 
-/// and use public methods from other modules like pool diretly 
+/// and use public methods from other modules like pool directly 
 module bluefin_spot::gateway {
     use sui::tx_context::{TxContext};
     use sui::coin::{Coin};
@@ -24,6 +24,7 @@ module bluefin_spot::gateway {
     /// 
     /// Parameters:
     /// - clock              : Sui clock object
+    /// - protocol_config    : Mutable reference to protocol config for version verification and collecting pool creation fee
     /// - pool_name          : The name of the pool. The convention used on bluefin spot is `CoinA-CoinB` 
     /// - pool_icon_url      : The url to image to be shown on the position NFT of the pool (can be empty as well `""`)
     /// - coin_a_symbol      : The symbol of coin A of the pool. The data is emitted and not stored on pool or the protocol
@@ -37,14 +38,16 @@ module bluefin_spot::gateway {
     ///                        pool might be interested in getting as part of the pool creation event. 
     ///                        The data is emitted and not stored on pool or the protocol
     /// - tick_spacing       : An unsigned number representing the tick spacing supported by the pool
-    /// - fee_basis_points   : The maount of fee the pool charges per swap. The fee is represented 
+    /// - fee_basis_points   : The amount of fee the pool charges per swap. The fee is represented 
     ///                        in 1e6 format. 1 bips is 1e3, 2.5 bps is 2.5*1e3 and so on.
     /// - current_sqrt_price : The starting sqrt price of the pool
-    /// - ctx                : Murable reference to caller's transaction context
+    /// - creation_fee       : The fee to be paid for creating a pool
+    /// - ctx                : Mutable reference to caller's transaction context
     /// 
-    /// Events Emitted       : PoolCreated
-    public entry fun create_pool<CoinTypeA, CoinTypeB>(
+    /// Events Emitted       : PoolCreated, PoolCreationFeePaid
+    public entry fun create_pool_v2<CoinTypeA, CoinTypeB, CoinTypeFee>(
         clock: &Clock, 
+        protocol_config: &mut GlobalConfig, 
         pool_name: vector<u8>, 
         pool_icon_url: vector<u8>, 
         coin_a_symbol: vector<u8>, 
@@ -56,6 +59,7 @@ module bluefin_spot::gateway {
         tick_spacing: u32, 
         fee_basis_points: u64, 
         current_sqrt_price: u128, 
+        creation_fee: Coin<CoinTypeFee>,
         ctx: &mut TxContext){        
         abort 0
     }
@@ -68,12 +72,12 @@ module bluefin_spot::gateway {
     /// - protocol_config    : The `config::GlobalConfig` object used for version verification
     /// - pool               : Mutable reference to the pool to which liquidity is to be provided
     /// - position           : The position to which the liquidity is being provided
-    /// - coin_a             : The Coin A object. Should have the atleast `coin_a_min` amount
-    /// - coin_b             : The Coin B object. Should have the atleast `coin_b_min` amount
+    /// - coin_a             : The Coin A object. Should have the at least `coin_a_min` amount
+    /// - coin_b             : The Coin B object. Should have the at least `coin_b_min` amount
     /// - coin_a_min         : The minimum amount of Coin A, the user wants to provide (Used for slippage check)
     /// - coin_b_min         : The minimum amount of Coin B, the user wants to provide (Used for slippage check)
     /// - liquidity          : The amount of liquidity to provide
-    /// - ctx                : Murable reference to caller's transaction context
+    /// - ctx                : Mutable reference to caller's transaction context
     /// 
     /// Events Emitted       : LiquidityProvided
     public entry fun provide_liquidity<CoinTypeA, CoinTypeB>(
@@ -91,7 +95,7 @@ module bluefin_spot::gateway {
 
     }
 
-    /// Allows caller to provide liquidity to a pool on exchange with a fixed amount of eithee Coin A or Coin B
+    /// Allows caller to provide liquidity to a pool on exchange with a fixed amount of either Coin A or Coin B
     /// The liquidity is computed based on the input amount
     /// 
     /// Parameters:
@@ -105,7 +109,7 @@ module bluefin_spot::gateway {
     /// - coin_a_max         : The maximum amount of Coin A, the user wants to provide (Used for slippage check)
     /// - coin_b_max         : The maximum amount of Coin B, the user wants to provide (Used for slippage check)
     /// - is_fixed_a         : True if the amount provided belongs to token A
-    /// - ctx                : Murable reference to caller's transaction context
+    /// - ctx                : Mutable reference to caller's transaction context
     /// 
     /// Events Emitted       : LiquidityProvided
     public entry fun provide_liquidity_with_fixed_amount<CoinTypeA, CoinTypeB>(
@@ -138,7 +142,7 @@ module bluefin_spot::gateway {
     /// - min_coins_a        : The minimum amount of Coin A, the user wants to receive (Used for slippage check)
     /// - min_coins_b        : The minimum amount of Coin B, the user wants to receive (Used for slippage check)
     /// - destination        : The address to which the withdrawn amounts of coin A & B are to be sent
-    /// - ctx                : Murable reference to caller's transaction context
+    /// - ctx                : Mutable reference to caller's transaction context
     /// 
     /// Events Emitted       : LiquidityRemoved
     public entry fun remove_liquidity<CoinTypeA, CoinTypeB>(
@@ -164,7 +168,7 @@ module bluefin_spot::gateway {
     /// - pool               : Mutable reference to the pool to pool on which the position is being closed
     /// - position           : The position to be closed
     /// - destination        : The address to which the withdrawn liquidity and fee of coin A & B are to be sent
-    /// - ctx                : Murable reference to caller's transaction context
+    /// - ctx                : Mutable reference to caller's transaction context
     /// 
     /// Events Emitted       : PositionClosed | LiquidityRemoved | UserFeeCollected
     public entry fun close_position<CoinTypeA, CoinTypeB>(
@@ -191,7 +195,7 @@ module bluefin_spot::gateway {
     /// - amount                : The input/output amount of token
     /// - amount_limit          : The max amount of input token to be used or the min amount of output tokens expected from swap
     /// - sqrt_price_max_limit  : The max price limit to hit during swap ( Max slippage )
-    /// - ctx                   : Murable reference to caller's transaction context
+    /// - ctx                   : Mutable reference to caller's transaction context
     /// 
     /// Events Emitted          : AssetSwap
     public entry fun swap_assets<CoinTypeA, CoinTypeB>(
@@ -218,7 +222,7 @@ module bluefin_spot::gateway {
     /// - protocol_config       : The `config::GlobalConfig` object used for version verification
     /// - pool                  : Mutable reference to the pool on which the position exists
     /// - position              : The position for which the fee is to be collected
-    /// - ctx                   : Murable reference to caller's transaction context
+    /// - ctx                   : Mutable reference to caller's transaction context
     /// 
     /// Events Emitted          : UserFeeCollected
     public entry fun collect_fee<CoinTypeA,CoinTypeB>(
@@ -238,7 +242,7 @@ module bluefin_spot::gateway {
     /// - protocol_config       : The `config::GlobalConfig` object used for version verification
     /// - pool                  : Mutable reference to the pool on which the position exists
     /// - position              : The position for which the rewards are to be collected
-    /// - ctx                   : Murable reference to caller's transaction context
+    /// - ctx                   : Mutable reference to caller's transaction context
     /// 
     /// Events Emitted          : UserRewardCollected
      public fun collect_reward<CoinTypeA, CoinTypeB, RewardCoinType>(

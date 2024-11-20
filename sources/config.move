@@ -36,7 +36,7 @@ module bluefin_spot::config {
         abort 0
     }
 
-    /// Assets if the config vesion matches the protocol version
+    /// Assets if the config version matches the protocol version
     public fun verify_version(config: &GlobalConfig) {
         abort 0
     }
@@ -45,5 +45,11 @@ module bluefin_spot::config {
     public fun verify_reward_manager(config: &GlobalConfig, manager: address) : bool {
        abort 0
     }
+
+    /// Checks if the provided coin type is supported for pool creation and returns the fee amount
+    public fun get_pool_creation_fee_amount<CoinTypeFee>(protocol_config: &GlobalConfig): (bool, u64) {
+        abort 0
+    }
+
 
 }

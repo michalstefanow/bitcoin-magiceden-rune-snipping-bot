@@ -3,9 +3,9 @@
 #[allow(unused_field, unused_variable,unused_type_parameter, unused_mut_parameter)]
 
 /// Pool Module
-/// This is the core module that houses the add/remove liquidty and swap functionality.
+/// This is the core module that houses the add/remove liquidity and swap functionality.
 /// The gateway invokes methods from this module to expose public entry method
-/// The module makes use of structs defined in Position, Oracel and Tick module to manage
+/// The module makes use of structs defined in Position, Oracle and Tick module to manage
 /// protocol state and perform aforementioned actions of liquidity and swap
 module bluefin_spot::pool {
     use sui::object::{UID, ID};
@@ -36,7 +36,7 @@ module bluefin_spot::pool {
         coin_b: Balance<CoinTypeB>,
         // The fee in basis points. 1 bps is represented as 100, 5 as 500
         fee_rate: u64,
-        // the percentange of fee that will go to protocol
+        // the percentage of fee that will go to protocol
         protocol_fee_share: u64,        
         // Variable to track the fee accumulated in coin A 
         fee_growth_global_coin_a: u128,
@@ -64,7 +64,7 @@ module bluefin_spot::pool {
         icon_url: String,
         // position index number
         position_index: u128,
-        // a incrementer, updated every time pool state is changed
+        // a incrementor, updated every time pool state is changed
         sequence_number: u128,
     }
 
@@ -82,11 +82,11 @@ module bluefin_spot::pool {
         ended_at_seconds: u64,  
         // total coins to be emitted 
         total_reward: u64, 
-        // total reward collectale at the moment 
+        // total reward collectable at the moment 
         total_reward_allocated: u64, 
         // amount of reward to be emitted per second
         reward_per_seconds: u128, 
-        // global values used to ditribute rewards
+        // global values used to distribute rewards
         reward_growth_global: u128, 
     }
 
@@ -94,7 +94,7 @@ module bluefin_spot::pool {
     struct SwapResult has copy, drop {
         /// True if position is a2b
         a2b: bool,
-        /// True if the amount speicified for swap is input amount
+        /// True if the amount specified for swap is input amount
         by_amount_in: bool,
         /// The initial amount specified
         amount_specified: u64,
@@ -102,7 +102,7 @@ module bluefin_spot::pool {
         amount_specified_remaining: u64,
         /// The amount of input/output calculated 
         amount_calculated: u64,
-        /// The fee growth global of Coin A or B depending on the direciton of swap
+        /// The fee growth global of Coin A or B depending on the direction of swap
         fee_growth_global: u128,
         /// The amount of fee paid as result of the swap
         fee_amount: u64,
@@ -126,7 +126,7 @@ module bluefin_spot::pool {
         step_results: vector<SwapStepResult>,
     }
 
-    /// Represents the swap result calcualted at each step/tick during
+    /// Represents the swap result calculated at each step/tick during
     /// swap amount calculations
     struct SwapStepResult has copy, drop, store {
         tick_index_next: I32,
@@ -139,7 +139,7 @@ module bluefin_spot::pool {
         remaining_amount: u64,
     }
 
-    /// The Flash swap receipt. This is a `hot potatoe` and must 
+    /// The Flash swap receipt. This is a `hot potato` and must 
     /// be paid/destroyed before the completion of transaction
     struct FlashSwapReceipt<phantom CoinTypeA, phantom CoinTypeB> {
         pool_id: ID,
@@ -155,9 +155,12 @@ module bluefin_spot::pool {
     /// Allows caller to create a pool on Bluefin spot
     /// Any one can invoke the method to create a pool. Note that the creator can only specify
     /// the fee bases points, the protocol fee % of the fee is fixed to 25% and can not be changed by the creator.
+    /// There is a fee to be paid for creation of a pool on bluefin protocol. You can use `config::get_pool_creation_fee_amount` 
+    /// to learn about the fee required.
     /// 
     /// Parameters:
     /// - clock              : Sui clock object
+    /// - protocol_config    : Mutable reference to protocol's config object
     /// - pool_name          : The name of the pool. The convention used on bluefin spot is `CoinA-CoinB` 
     /// - icon_url      : The url to image to be shown on the position NFT of the pool (can be empty as well `""`)
     /// - coin_a_symbol      : The symbol of coin A of the pool. The data is emitted and not stored on pool or the protocol
@@ -171,14 +174,18 @@ module bluefin_spot::pool {
     ///                        pool might be interested in getting as part of the pool creation event. 
     ///                        The data is emitted and not stored on pool or the protocol
     /// - tick_spacing       : An unsigned number representing the tick spacing supported by the pool
-    /// - fee_rate           : The maount of fee the pool charges per swap. The fee is represented 
+    /// - fee_rate           : The amount of fee the pool charges per swap. The fee is represented 
     ///                        in 1e6 format. 1 bips is 1e3, 2.5 bps is 2.5*1e3 and so on.
     /// - current_sqrt_price : The starting sqrt price of the pool
-    /// - ctx                : Murable reference to caller's transaction context
+    /// - creation_fee       : The fee to be paid for creating a pool
+    /// - ctx                : Mutable reference to caller's transaction context
     /// 
-    /// Events Emitted       : PoolCreated
-    public fun new<CoinTypeA, CoinTypeB>(
-        clock: &Clock, 
+    /// Events Emitted       : PoolCreated, PoolCreationFeePaid
+    /// 
+    /// Returns              : ID of the pool
+    public fun create_pool<CoinTypeA, CoinTypeB, CoinTypeFee>(
+        clock: &Clock,
+        protocol_config: &mut GlobalConfig,
         pool_name: vector<u8>, 
         icon_url: vector<u8>,
         coin_a_symbol: vector<u8>, 
@@ -190,8 +197,76 @@ module bluefin_spot::pool {
         tick_spacing: u32,
         fee_rate: u64,
         current_sqrt_price: u128,
-        ctx: &mut TxContext) {
-        abort 0
+        creation_fee: Balance<CoinTypeFee>,
+        ctx: &mut TxContext): ID {
+            abort 0
+    }
+
+
+    /// Allows caller to create a pool on Bluefin spot and provide liquidity to it upon creation.
+    /// The method invokes internally `create_pool`, `open_position` and `add_liquidity_with_fixed_amount` methods
+    /// 
+    /// Parameters:
+    /// - clock              : Sui clock object
+    /// - protocol_config    : Mutable reference to protocol's config object
+    /// - pool_name          : The name of the pool. The convention used on bluefin spot is `CoinA-CoinB` 
+    /// - icon_url      : The url to image to be shown on the position NFT of the pool (can be empty as well `""`)
+    /// - coin_a_symbol      : The symbol of coin A of the pool. The data is emitted and not stored on pool or the protocol
+    /// - coin_a_decimals    : The number of decimals the Coin A has. The data is emitted and not stored on pool or the protocol 
+    /// - coin_a_url         : The url of the coin A token metadata or icon or anything else a user creating the 
+    ///                        pool might be interested in getting as part of the pool creation event. 
+    ///                        The data is emitted and not stored on pool or the protocol
+    /// - coin_b_symbol      : The symbol of coin B of the pool. The data is emitted and not stored on pool or the protocol
+    /// - coin_b_decimals    : The number of decimals the Coin B has. The data is emitted and not stored on pool or the protocol
+    /// - coin_a_url         : The url of the coin A token metadata or icon or anything else a user creating the 
+    ///                        pool might be interested in getting as part of the pool creation event. 
+    ///                        The data is emitted and not stored on pool or the protocol
+    /// - tick_spacing       : An unsigned number representing the tick spacing supported by the pool
+    /// - fee_rate           : The amount of fee the pool charges per swap. The fee is represented 
+    ///                        in 1e6 format. 1 bips is 1e3, 2.5 bps is 2.5*1e3 and so on.
+    /// - current_sqrt_price : The starting sqrt price of the pool
+    /// - creation_fee       : The fee to be paid for creating a pool
+    /// - lower_tick_bits       : The unsigned bits of the lower tick. Ticks are represented as 2^31 with the MSB bit being used for sign
+    /// - upper_tick_bits       : The unsigned bits of the lower tick. Ticks are represented as 2^31 with the MSB bit being used for sign
+    /// - balance_a          : The balance object of coin A. This should be equal to the 
+    ///                        amount (including slippage) that user intends to provide to the pool
+    /// - balance_b          : The balance object of coin B. This should be equal to the 
+    ///                        amount (including slippage) that user intends to provide to the pool
+    /// - amount             : The amount of Coin A or Coin B to be provided
+    /// - is_fixed_a         : True if the amount provided belongs to token A
+    /// - ctx                : Mutable reference to caller's transaction context
+    /// 
+    /// Events Emitted       : PoolCreated, PoolCreationFeePaid, PositionOpened, LiquidityProvided
+    /// 
+    /// Returns              : 1. ID of the pool
+    ///                        2. The opened position
+    ///                        3. Amount of coin A provided to pool
+    ///                        4. Amount of coin B provided to pool
+    ///                        5. Residual balance of Coin A
+    ///                        6. Residual balance of Coin B
+    public fun create_pool_with_liquidity<CoinTypeA, CoinTypeB, CoinTypeFee>(
+        clock: &Clock,
+        protocol_config: &mut GlobalConfig,
+        pool_name: vector<u8>, 
+        icon_url: vector<u8>,
+        coin_a_symbol: vector<u8>, 
+        coin_a_decimals: u8, 
+        coin_a_url: vector<u8>, 
+        coin_b_symbol: vector<u8>, 
+        coin_b_decimals: u8, 
+        coin_b_url: vector<u8>, 
+        tick_spacing: u32,
+        fee_rate: u64,
+        current_sqrt_price: u128,
+        creation_fee: Balance<CoinTypeFee>,
+        lower_tick_bits: u32, 
+        upper_tick_bits: u32, 
+        balance_a: Balance<CoinTypeA>,
+        balance_b: Balance<CoinTypeB>,
+        amount: u64,
+        is_fixed_a: bool,
+        ctx: &mut TxContext): (ID, Position,  u64, u64, Balance<CoinTypeA>, Balance<CoinTypeB>) {
+            abort 0
     }
 
     /// Allows caller to provide liquidity to a pool on exchange without specifying the 
@@ -204,9 +279,9 @@ module bluefin_spot::pool {
     /// - protocol_config    : The `config::GlobalConfig` object used for version verification
     /// - pool               : Mutable reference to the pool to which liquidity is to be provided
     /// - position           : The position to which the liquidity is being provided
-    /// - balance_a          : The balance object of coin A. This should be equald to the 
+    /// - balance_a          : The balance object of coin A. This should be equal to the 
     ///                        amount (including slippage) that user intends to provide to the pool
-    /// - balance_b          : The balance object of coin B. This should be equald to the 
+    /// - balance_b          : The balance object of coin B. This should be equal to the 
     ///                        amount (including slippage) that user intends to provide to the pool
     /// - liquidity          : The amount of liquidity to provide
     /// 
@@ -228,7 +303,7 @@ module bluefin_spot::pool {
     }
 
 
-    /// Allows caller to provide liquidity to a pool on exchange with a fixed amount of eithee Coin A or Coin B
+    /// Allows caller to provide liquidity to a pool on exchange with a fixed amount of either Coin A or Coin B
     /// The liquidity is computed based on the input amount. 
     /// @notice The method does not performs slippage check. The caller must have those checks implemented on their end
     /// If the input `balance_a` and `balance_b` to the call are > required amount, the residual amount is returned back
@@ -238,9 +313,9 @@ module bluefin_spot::pool {
     /// - protocol_config    : The `config::GlobalConfig` object used for version verification
     /// - pool               : Mutable reference to the pool to which liquidity is to be provided
     /// - position           : The position to which the liquidity is being provided
-    /// - balance_a          : The balance object of coin A. This should be equald to the 
+    /// - balance_a          : The balance object of coin A. This should be equal to the 
     ///                        amount (including slippage) that user intends to provide to the pool
-    /// - balance_b          : The balance object of coin B. This should be equald to the 
+    /// - balance_b          : The balance object of coin B. This should be equal to the 
     ///                        amount (including slippage) that user intends to provide to the pool
     /// - amount             : The amount of Coin A or Coin B to be provided
     /// - is_fixed_a         : True if the amount provided belongs to token A
@@ -267,7 +342,7 @@ module bluefin_spot::pool {
     
     /// Allows caller to remove liquidity from a pool from given position. The input is the amount of liquidity
     /// user wants the remove. The coin A and coin B amounts are calculated and returned as balances by the method.
-    /// The caller must dispatch the returned balances to their desitnation
+    /// The caller must dispatch the returned balances to their destination
     /// 
     /// Parameters:
     /// - protocol_config    : The `config::GlobalConfig` object used for version verification
@@ -278,10 +353,10 @@ module bluefin_spot::pool {
     /// 
     /// Events Emitted       : LiquidityRemoved
     /// 
-    /// Returns              : 1. Amount of coin A provided rempved from pool
+    /// Returns              : 1. Amount of coin A provided removed from pool
     ///                        2. Amount of coin B provided removed from pool
-    ///                        3. Balnace of Coin A equal to Coin A amount returned above
-    ///                        4. Balnace of Coin B equal to Coin B amount returned above
+    ///                        3. Balance of Coin A equal to Coin A amount returned above
+    ///                        4. Balance of Coin B equal to Coin B amount returned above
     public fun remove_liquidity<CoinTypeA, CoinTypeB>(
         protocol_config: &GlobalConfig,
         pool: &mut Pool<CoinTypeA, CoinTypeB>, 
@@ -323,7 +398,7 @@ module bluefin_spot::pool {
         abort 0
     }
 
-    /// A public getter method to calculate the swap results. This does not modify the state of the protocol and perfomrs the same
+    /// A public getter method to calculate the swap results. This does not modify the state of the protocol and performs the same
     /// swap calculation that `swap_asset` method does. 
     /// 
     /// Parameters:
@@ -403,7 +478,7 @@ module bluefin_spot::pool {
     /// - pool                  : Mutable reference to the pool on which the position is being opened
     /// - lower_tick_bits       : The unsigned bits of the lower tick. Ticks are represented as 2^31 with the MSB bit being used for sign
     /// - upper_tick_bits       : The unsigned bits of the lower tick. Ticks are represented as 2^31 with the MSB bit being used for sign
-    /// - ctx                   : Murable reference to caller's transaction context
+    /// - ctx                   : Mutable reference to caller's transaction context
     /// 
     /// Events Emitted          : PositionOpened
     /// 
@@ -559,6 +634,16 @@ module bluefin_spot::pool {
     /// Given a list of tick index bits, returns the tick info
     /// for the provided tick bits if initialized
     public fun fetch_provided_ticks<CoinTypeA, CoinTypeB>(pool: &Pool<CoinTypeA, CoinTypeB>, ticks:vector<u32>): vector<TickInfo>{
+        abort 0
+    }
+
+    /// Returns pool fee rate
+    public fun get_fee_rate<CoinTypeA,CoinTypeB>(pool: &Pool<CoinTypeA, CoinTypeB>): u64 {
+        abort 0
+    }
+
+    /// Returns pool tick spacing
+    public fun get_tick_spacing<CoinTypeA,CoinTypeB>(pool: &Pool<CoinTypeA, CoinTypeB>): u32 {
         abort 0
     }
    

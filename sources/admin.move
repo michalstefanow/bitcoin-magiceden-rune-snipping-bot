@@ -23,7 +23,7 @@ module bluefin_spot::admin {
     /// - reward_coin         : coin Object with balance for the reward that is to be initialized
     /// - reward_amount       : amount of rewards to be given out
     /// - clock               : sui clock object
-    /// - ctx                 : Murable reference to caller's transaction context
+    /// - ctx                 : Mutable reference to caller's transaction context
     /// 
     /// Events Emitted        : UpdatePoolRewardEmissionEvent
     public entry fun initialize_pool_reward<CoinTypeA, CoinTypeB, RewardCoinType>(
@@ -49,7 +49,7 @@ module bluefin_spot::admin {
     /// - reward_coin          : coin Object with balance for the reward that is to be initialized
     /// - reward_amount        : amount of rewards to be given out
     /// - clock                : sui clock object
-    /// - ctx                  : Murable reference to caller's transaction context
+    /// - ctx                  : Mutable reference to caller's transaction context
     /// 
     ///  Events Emitted        : UpdatePoolRewardEmissionEvent
     public entry fun update_pool_reward_emission<CoinTypeA, CoinTypeB, RewardCoinType>(
@@ -70,7 +70,7 @@ module bluefin_spot::admin {
     /// - pool              : pool object
     /// - seconds_to_add    : seconds to increase for reward emission.
     /// - clock             : sui clock object
-    /// - ctx               : Murable reference to caller's transaction context
+    /// - ctx               : Mutable reference to caller's transaction context
     /// 
     /// Events Emitted      : UpdatePoolRewardEmissionEvent
     public fun add_seconds_to_reward_emission<CoinTypeA, CoinTypeB, RewardCoinType>(
