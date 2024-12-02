@@ -647,5 +647,79 @@ module bluefin_spot::pool {
         abort 0
     }
    
+    /// Returns the a2b flag of swap result
+    public fun get_swap_result_a2b(result: &SwapResult): bool {
+        abort 0
+    }
+
+    /// Returns the by amount in flag of swap result
+    public fun get_swap_result_by_amount_in(result: &SwapResult): bool {
+        abort 0
+    }
+    
+    /// Returns the by input amount specified for swap calculations
+    public fun get_swap_result_amount_specified(result: &SwapResult): u64 {
+        abort 0
+    }
+
+    /// Returns the input amount remaining after swap
+    public fun get_swap_result_amount_specified_remaining(result: &SwapResult): u64 {
+        abort 0
+    }
+
+    /// Returns the swap amount calculated
+    public fun get_swap_result_amount_calculated(result: &SwapResult): u64 {
+        abort 0
+    }
+    
+    /// Returns the fee growth global after the swap calculations
+    public fun get_swap_result_fee_growth_global(result: &SwapResult): u128 {
+        abort 0
+    }
+
+    /// Returns the fee amount calculated for LPs from the swap
+    public fun get_swap_result_fee_amount(result: &SwapResult): u64 {
+        abort 0
+    }
+
+    /// Returns the protocol fee amount calculated from the swap
+    public fun get_swap_result_protocol_fee(result: &SwapResult): u64 {
+        abort 0
+    }
+
+    /// Returns the starting sqrt price of the pool prior to swap
+    public fun get_swap_result_start_sqrt_price(result: &SwapResult): u128 {
+        abort 0
+    }
+
+    /// Returns the ending sqrt price of the pool after the swap
+    public fun get_swap_result_end_sqrt_price(result: &SwapResult): u128 {
+        abort 0
+    }
+    
+    /// Returns the current tick index of the pool (at end sqrt price) after the swap
+    public fun get_swap_result_current_tick_index(result: &SwapResult): I32 {
+        abort 0
+    }
+
+    /// Returns true if input amount was not fully swapped
+    public fun get_swap_result_is_exceed(result: &SwapResult): bool {
+        abort 0
+    }
+
+    /// Returns the liquidity of the pool prior to swap calculations
+    public fun get_swap_result_starting_liquidity(result: &SwapResult): u128 {
+        abort 0
+    }
+
+    /// Returns the liquidity of the pool after the swap calculations    
+    public fun get_swap_result_liquidity(result: &SwapResult): u128 {
+        abort 0
+    }
+
+    /// Returns the number of ticks used to compute the swap amount    
+    public fun get_swap_result_steps(result: &SwapResult): u64 {
+        abort 0
+    }    
 
 }
