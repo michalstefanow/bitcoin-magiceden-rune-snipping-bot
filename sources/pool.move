@@ -722,4 +722,29 @@ module bluefin_spot::pool {
         abort 0
     }    
 
+    /// Returns the liquidity, coin a and coin b amount by the provided input coin amount
+    public fun get_liquidity_by_amount(
+        lower_index:I32, 
+        upper_index: I32, 
+        current_tick_index: I32, 
+        current_sqrt_price: u128, 
+        amount: u64, 
+        is_fixed_a: bool): (u128, u64, u64) {
+        
+        abort 0
+    }
+
+    /// Returns the coin A and B amounts by provided liquidity input
+    public fun get_amount_by_liquidity(
+        lower_index:I32, 
+        upper_index: I32, 
+        current_tick_index: I32, 
+        current_sqrt_price: u128, 
+        liquidity: u128, 
+        round_up: bool ): (u64, u64) {
+        
+        abort 0
+    }
+
+
 }
