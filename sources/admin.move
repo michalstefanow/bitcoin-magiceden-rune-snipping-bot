@@ -2,8 +2,8 @@
 
 #[allow(unused_field, unused_variable,unused_type_parameter, unused_mut_parameter)]
 /// Admin Module
-/// The module exposes methods for priviliged users like the pool 
-/// manager/creator, rewards manager and oher priviliged operators
+/// The module exposes methods for privileged users like the pool
+/// manager/creator, rewards manager and other privileged operators
 module bluefin_spot::admin {
     use sui::tx_context::{TxContext};
     use std::string::{String};
@@ -11,14 +11,25 @@ module bluefin_spot::admin {
     use sui::coin::{Coin};
     use bluefin_spot::config::{GlobalConfig};
     use bluefin_spot::pool::{Pool};
+    use sui::object::{UID};
 
+
+    /// The holder of the cap is the admin of the protocol
+    struct AdminCap has key {
+        id: UID,
+    }
+
+    /// The holder of the cap can withdraw protocol fee from the pools
+    struct ProtocolFeeCap has key {
+        id: UID,
+    }
 
     /// Initializes a reward for a given pool. The caller must either be the manger (creator)
     /// of the pool or a whitelisted rewards manager by admin
     /// Parameters:
-    /// - protocol_config     : glocal config object for spot protocol
+    /// - protocol_config     : global config object for spot protocol
     /// - pool                : pool object
-    /// - start_time          : start time for the rewards that are to be initilized (must be in future)
+    /// - start_time          : start time for the rewards that are to be initialized (must be in future)
     /// - active_for_seconds  : seconds for which rewards are to be allocated.
     /// - reward_coin         : coin Object with balance for the reward that is to be initialized
     /// - reward_amount       : amount of rewards to be given out
@@ -79,6 +90,17 @@ module bluefin_spot::admin {
         seconds_to_add: u64, 
         clock: &Clock, 
         ctx: &TxContext) {
+        abort 0
+    }
+
+
+    #[test_only]
+    public fun get_admin_cap(ctx: &mut TxContext): AdminCap {
+        abort 0
+    }
+
+    #[test_only]
+    public fun get_fee_cap(ctx: &mut TxContext): ProtocolFeeCap {
         abort 0
     }
 }

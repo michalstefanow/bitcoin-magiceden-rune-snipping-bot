@@ -556,26 +556,47 @@ module bluefin_spot::pool {
     }
 
     /// Returns the amount to be paid for the flash swap
+    /// 
+    /// Parameters:
+    /// - receipt: reference to the flash swap receipt
+    /// Returns:
+    /// - The amount to be paid for the flash swap
     public fun swap_pay_amount<CoinTypeA, CoinTypeB>(receipt: &FlashSwapReceipt<CoinTypeA, CoinTypeB>) : u64 {
         abort 0
     }
 
     /// Returns the address of current pool' manager
+    /// Parameters:
+    /// - pool: reference to the pool
+    /// Returns:
+    /// - The address of the current pool manager
     public fun get_pool_manager<CoinTypeA, CoinTypeB>(pool: &Pool<CoinTypeA, CoinTypeB>): address {
         abort 0
     }
 
     /// Returns the accrued protocol fee for coin A
+    /// Parameters:
+    /// - pool: reference to the pool
+    /// Returns:
+    /// - The accrued protocol fee for coin A
     public fun get_protocol_fee_for_coin_a<CoinTypeA, CoinTypeB>(pool: &Pool<CoinTypeA, CoinTypeB>): u64 {
         abort 0
     }
 
     /// Returns the accrued protocol fee for coin B
+    /// Parameters:
+    /// - pool: reference to the pool
+    /// Returns:
+    /// - The accrued protocol fee for coin B
     public fun get_protocol_fee_for_coin_b<CoinTypeA, CoinTypeB>(pool: &Pool<CoinTypeA, CoinTypeB>): u64 {
         abort 0
     }
 
     /// Returns current pool liquidity
+    /// Parameters:
+    /// - pool: reference to the pool
+    /// Returns:
+    /// - The current pool liquidity
     public fun liquidity<CoinTypeA, CoinTypeB>(
         pool: &Pool<CoinTypeA, CoinTypeB>
     ): u128 {
@@ -583,6 +604,10 @@ module bluefin_spot::pool {
     }
 
     /// Returns current sqrt price of the pool
+    /// Parameters:
+    /// - pool: reference to the pool
+    /// Returns:
+    /// - The current sqrt price of the pool
     public fun current_sqrt_price<CoinTypeA, CoinTypeB>(
         pool: &Pool<CoinTypeA, CoinTypeB>
     ): u128 {
@@ -590,30 +615,56 @@ module bluefin_spot::pool {
     }
 
     /// Returns the current tick index of the pool
+    /// Parameters:
+    /// - pool: reference to the pool
+    /// Returns:
+    /// - The current tick index of the pool
     public fun current_tick_index<CoinTypeA, CoinTypeB>( pool: &Pool<CoinTypeA, CoinTypeB>): I32 {
         abort 0
     }
 
     /// Returns the current sequence number of the pool
+    /// Parameters:
+    /// - pool: reference to the pool
+    /// Returns:
+    /// - The current sequence number of the pool
     public fun sequence_number<CoinTypeA, CoinTypeB>(pool: &Pool<CoinTypeA, CoinTypeB>): u128 {
         abort 0
     }
 
     /// Verifies if the given address is pool manager or not
+    /// Parameters:
+    /// - pool: reference to the pool
+    /// - manager: address to check if it is a pool manager
+    /// Returns:
+    /// - true if the address is a pool manager, false otherwise
     public fun verify_pool_manager<CoinTypeA, CoinTypeB>(pool: &Pool<CoinTypeA, CoinTypeB>, manager: address): bool {
         abort 0
     }
 
+    /// Returns the coin reserves of the pool
+    /// Parameters:
+    /// - pool: reference to the pool
+    /// Returns:
+    /// - The coin reserves of the pool
     public fun coin_reserves<CoinTypeA, CoinTypeB> (pool: &Pool<CoinTypeA, CoinTypeB>): (u64, u64){
         abort 0
     }
 
     /// Returns the protocol fee share on the pool
+    /// Parameters:
+    /// - pool: reference to the pool
+    /// Returns:
+    /// - The protocol fee share on the pool
     public fun protocol_fee_share<CoinTypeA, CoinTypeB> (pool: &Pool<CoinTypeA, CoinTypeB>): u64 {
         abort 0
     }
 
     /// Returns the number of unique rewards currently set on the pool
+    /// Parameters:
+    /// - pool: reference to the pool
+    /// Returns:
+    /// - The number of unique rewards currently set on the pool
     public fun reward_infos_length<CoinTypeA, CoinTypeB>(pool: &Pool<CoinTypeA, CoinTypeB>) : u64 {
         abort 0
     }
@@ -622,107 +673,197 @@ module bluefin_spot::pool {
     /// @notice if the reward's epoch has ended, the reward info still persists on the pool. Thus
     /// the method will return true even after reward emission has finished until the admin removes the reward
     /// info from the pool
+    /// Parameters:
+    /// - pool: reference to the pool
+    /// Returns:
+    /// - true if the reward is present on the pool, false otherwise
     public fun is_reward_present<CoinTypeA, CoinTypeB, RewardCoinType>(pool: &Pool<CoinTypeA, CoinTypeB>): bool {        
         abort 0  
     }
 
     /// Returns the tick manager non-mutable reference
+    /// Parameters:
+    /// - pool: reference to the pool
+    /// Returns:
+    /// - The tick manager non-mutable reference
     public fun get_tick_manager<CoinTypeA, CoinTypeB>(pool: &Pool<CoinTypeA, CoinTypeB>): &TickManager{
         abort 0
     }
 
     /// Given a list of tick index bits, returns the tick info
     /// for the provided tick bits if initialized
+    /// Parameters:
+    /// - pool: reference to the pool
+    /// - ticks: vector of tick index bits
+    /// Returns:
+    /// - The tick info for the provided tick bits if initialized
     public fun fetch_provided_ticks<CoinTypeA, CoinTypeB>(pool: &Pool<CoinTypeA, CoinTypeB>, ticks:vector<u32>): vector<TickInfo>{
         abort 0
     }
 
     /// Returns pool fee rate
+    /// Parameters:
+    /// - pool: reference to the pool
+    /// Returns:
+    /// - The pool fee rate
     public fun get_fee_rate<CoinTypeA,CoinTypeB>(pool: &Pool<CoinTypeA, CoinTypeB>): u64 {
         abort 0
     }
 
     /// Returns pool tick spacing
+    /// Parameters:
+    /// - pool: reference to the pool
+    /// Returns:
+    /// - The pool tick spacing
     public fun get_tick_spacing<CoinTypeA,CoinTypeB>(pool: &Pool<CoinTypeA, CoinTypeB>): u32 {
         abort 0
     }
    
     /// Returns the a2b flag of swap result
+    /// Parameters:
+    /// - result: reference to the swap result
+    /// Returns:
+    /// - The a2b flag of swap result
     public fun get_swap_result_a2b(result: &SwapResult): bool {
         abort 0
     }
 
     /// Returns the by amount in flag of swap result
+    /// Parameters:
+    /// - result: reference to the swap result
+    /// Returns:
+    /// - The by amount in flag of swap result
     public fun get_swap_result_by_amount_in(result: &SwapResult): bool {
         abort 0
     }
     
     /// Returns the by input amount specified for swap calculations
+    /// Parameters:
+    /// - result: reference to the swap result
+    /// Returns:
+    /// - The by input amount specified for swap calculations
     public fun get_swap_result_amount_specified(result: &SwapResult): u64 {
         abort 0
     }
 
     /// Returns the input amount remaining after swap
+    /// Parameters:
+    /// - result: reference to the swap result
+    /// Returns:
+    /// - The input amount remaining after swap
     public fun get_swap_result_amount_specified_remaining(result: &SwapResult): u64 {
         abort 0
     }
 
     /// Returns the swap amount calculated
+    /// Parameters:
+    /// - result: reference to the swap result
+    /// Returns:
+    /// - The swap amount calculated
     public fun get_swap_result_amount_calculated(result: &SwapResult): u64 {
         abort 0
     }
     
     /// Returns the fee growth global after the swap calculations
+    /// Parameters:
+    /// - result: reference to the swap result
+    /// Returns:
+    /// - The fee growth global after the swap calculations
     public fun get_swap_result_fee_growth_global(result: &SwapResult): u128 {
         abort 0
     }
 
     /// Returns the fee amount calculated for LPs from the swap
+    /// Parameters:
+    /// - result: reference to the swap result
+    /// Returns:
+    /// - The fee amount calculated for LPs from the swap
     public fun get_swap_result_fee_amount(result: &SwapResult): u64 {
         abort 0
     }
 
     /// Returns the protocol fee amount calculated from the swap
+    /// Parameters:
+    /// - result: reference to the swap result
+    /// Returns:
+    /// - The protocol fee amount calculated from the swap
     public fun get_swap_result_protocol_fee(result: &SwapResult): u64 {
         abort 0
     }
 
     /// Returns the starting sqrt price of the pool prior to swap
+    /// Parameters:
+    /// - result: reference to the swap result
+    /// Returns:
+    /// - The starting sqrt price of the pool prior to swap
     public fun get_swap_result_start_sqrt_price(result: &SwapResult): u128 {
         abort 0
     }
 
     /// Returns the ending sqrt price of the pool after the swap
+    /// Parameters:
+    /// - result: reference to the swap result
+    /// Returns:
+    /// - The ending sqrt price of the pool after the swap
     public fun get_swap_result_end_sqrt_price(result: &SwapResult): u128 {
         abort 0
     }
     
     /// Returns the current tick index of the pool (at end sqrt price) after the swap
+    /// Parameters:
+    /// - result: reference to the swap result
+    /// Returns:
+    /// - The current tick index of the pool (at end sqrt price) after the swap
     public fun get_swap_result_current_tick_index(result: &SwapResult): I32 {
         abort 0
     }
 
-    /// Returns true if input amount was not fully swapped
+    /// Returns true if input amount was not fully swapped  
+    /// Parameters:
+    /// - result: reference to the swap result
+    /// Returns:
+    /// - true if input amount was not fully swapped
     public fun get_swap_result_is_exceed(result: &SwapResult): bool {
         abort 0
     }
 
     /// Returns the liquidity of the pool prior to swap calculations
+    /// Parameters:
+    /// - result: reference to the swap result
+    /// Returns:
+    /// - The liquidity of the pool prior to swap calculations
     public fun get_swap_result_starting_liquidity(result: &SwapResult): u128 {
         abort 0
     }
 
     /// Returns the liquidity of the pool after the swap calculations    
+    /// Parameters:
+    /// - result: reference to the swap result
+    /// Returns:
+    /// - The liquidity of the pool after the swap calculations
     public fun get_swap_result_liquidity(result: &SwapResult): u128 {
         abort 0
     }
 
     /// Returns the number of ticks used to compute the swap amount    
+    /// Parameters:
+    /// - result: reference to the swap result
+    /// Returns:
+    /// - The number of ticks used to compute the swap amount
     public fun get_swap_result_steps(result: &SwapResult): u64 {
         abort 0
     }    
 
     /// Returns the liquidity, coin a and coin b amount by the provided input coin amount
+    /// Parameters:
+    /// - lower_index: lower tick index
+    /// - upper_index: upper tick index
+    /// - current_tick_index: current tick index
+    /// - current_sqrt_price: current sqrt price
+    /// - amount: input coin amount
+    /// - is_fixed_a: true if the input coin is coin A, false otherwise
+    /// Returns:
+    /// - The liquidity, coin a and coin b amount by the provided input coin amount
     public fun get_liquidity_by_amount(
         lower_index:I32, 
         upper_index: I32, 
@@ -735,6 +876,15 @@ module bluefin_spot::pool {
     }
 
     /// Returns the coin A and B amounts by provided liquidity input
+    /// Parameters:
+    /// - lower_index: lower tick index
+    /// - upper_index: upper tick index
+    /// - current_tick_index: current tick index
+    /// - current_sqrt_price: current sqrt price
+    /// - liquidity: liquidity input
+    /// - round_up: true if the amount should be rounded up, false otherwise
+    /// Returns:
+    /// - The coin A and B amounts by provided liquidity input
     public fun get_amount_by_liquidity(
         lower_index:I32, 
         upper_index: I32, 
@@ -747,4 +897,49 @@ module bluefin_spot::pool {
     }
 
 
+    #[test_only]
+    public fun create_test_pool_without_liquidity<CoinTypeA, CoinTypeB, CoinTypeFee>(
+        clock: &Clock,
+        protocol_config: &mut GlobalConfig,
+        pool_name: vector<u8>, 
+        icon_url: vector<u8>,
+        coin_a_symbol: vector<u8>, 
+        coin_a_decimals: u8, 
+        coin_a_url: vector<u8>, 
+        coin_b_symbol: vector<u8>, 
+        coin_b_decimals: u8, 
+        coin_b_url: vector<u8>, 
+        tick_spacing: u32,
+        fee_rate: u64,
+        current_sqrt_price: u128,
+        creation_fee: Balance<CoinTypeFee>,
+        ctx: &mut TxContext): Pool<CoinTypeA, CoinTypeB> {
+            abort 0
+        }
+    
+     #[test_only]
+    public fun create_test_pool_with_liquidity<CoinTypeA, CoinTypeB, CoinTypeFee>(
+        clock: &Clock,
+        protocol_config: &mut GlobalConfig,
+        pool_name: vector<u8>, 
+        icon_url: vector<u8>,
+        coin_a_symbol: vector<u8>, 
+        coin_a_decimals: u8, 
+        coin_a_url: vector<u8>, 
+        coin_b_symbol: vector<u8>, 
+        coin_b_decimals: u8, 
+        coin_b_url: vector<u8>, 
+        tick_spacing: u32,
+        fee_rate: u64,
+        current_sqrt_price: u128,
+        creation_fee: Balance<CoinTypeFee>,
+        lower_tick_bits: u32, 
+        upper_tick_bits: u32, 
+        balance_a: Balance<CoinTypeA>,
+        balance_b: Balance<CoinTypeB>,
+        amount: u64,
+        is_fixed_a: bool,
+        ctx: &mut TxContext): (Pool<CoinTypeA, CoinTypeB>, Position,  u64, u64, Balance<CoinTypeA>, Balance<CoinTypeB>) {
+            abort 0
+        }
 }

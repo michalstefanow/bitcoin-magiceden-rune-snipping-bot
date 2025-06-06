@@ -36,50 +36,117 @@ module bluefin_spot::tick {
     }
 
 
+    /// Returns the tick info from the table
+    /// Parameters:
+    /// - ticks: reference to the table of ticks
+    /// - index: the index of the tick
+    /// Returns:
+    /// - The tick info for the given index
     public fun get_tick_from_table(ticks: &Table<I32, TickInfo>, index: I32) : &TickInfo {
         abort 0
     }   
 
+    /// Returns the tick info from the manager
+    /// Parameters:
+    /// - manager: reference to the tick manager
+    /// - index: the index of the tick
+    /// Returns:
+    /// - The tick info for the given index
     public fun get_tick_from_manager(manager: &TickManager, index: I32) : &TickInfo {
         abort 0
     }   
 
+    /// Returns the sqrt price of the tick
+    /// Parameters:
+    /// - tick: reference to the tick info
+    /// Returns:
+    /// - The sqrt price of the tick
     public fun sqrt_price(tick: &TickInfo) : u128 {
-        tick.sqrt_price
+        abort 0
     }
 
+    /// Creates a new tick info
+    /// Parameters:
+    /// - index: the index of the tick
+    /// Returns:
+    /// - The new tick info
     public fun create_tick(index: I32): TickInfo {
         abort 0
     }
 
+    /// Returns the gross liquidity of the tick
+    /// Parameters:
+    /// - tick: reference to the tick info
+    /// Returns:
+    /// - The gross liquidity of the tick
     public fun liquidity_gross(tick: &TickInfo): u128 {
-        tick.liquidity_gross
+        abort 0
     }
 
+    /// Returns the net liquidity of the tick
+    /// Parameters:
+    /// - tick: reference to the tick info
+    /// Returns:
+    /// - The net liquidity of the tick
     public fun liquidity_net(tick: &TickInfo): I128 {
-        tick.liquidity_net
+        abort 0
     }
 
+    /// Returns the tick spacing of the tick manager
+    /// Parameters:
+    /// - manager: reference to the tick manager
+    /// Returns:
+    /// - The tick spacing of the tick manager
     public fun tick_spacing(manager: &TickManager): u32 {
-        manager.tick_spacing
+        abort 0
     }
 
+    /// Returns the fee and reward growths inside the tick
+    /// Parameters:
+    /// - manager: reference to the tick manager
+    /// - lower_tick_index: lower tick index
+    /// - upper_tick_index: upper tick index
+    /// - current_tick_index: current tick index
+    /// - fee_growth_global_coin_a: fee growth global coin A
     public fun get_fee_and_reward_growths_inside(manager: &TickManager, lower_tick_index: I32, upper_tick_index: I32, current_tick_index: I32, fee_growth_global_coin_a: u128, fee_growth_global_coin_b: u128, reward_growths_global: vector<u128>) : (u128, u128, vector<u128>) {
         abort 0
     }
 
+    /// Returns the fee and reward growths outside the tick
+    /// Parameters:
+    /// - manager: reference to the tick manager
+    /// - tick_index: tick index
+    /// Returns:
+    /// - The fee and reward growths outside the tick
     public fun get_fee_and_reward_growths_outside(manager: &TickManager, tick_index: I32) : (u128, u128, vector<u128>) {
         abort 0
     }
 
+    /// Returns true if the tick is initialized
+    /// Parameters:
+    /// - manager: reference to the tick manager
+    /// - tick_index: tick index
+    /// Returns:
+    /// - true if the tick is initialized, false otherwise
     public fun is_tick_initialized(manager: &TickManager, tick_index: I32) : bool {
         abort 0
     }
 
+    /// Returns the bitmap of the tick manager
+    /// Parameters:
+    /// - manager: reference to the tick manager
+    /// Returns:
+    /// - The bitmap of the tick manager
     public fun bitmap(manager: &TickManager ): &Table<I32, u256> {
-        &manager.bitmap
+        abort 0
     }   
 
+    /// Fetches the tick info for the provided tick indices
+    /// Parameters:
+    /// - manager: reference to the tick manager
+    /// - ticks: vector of tick indices
+    /// Returns:
+    /// - The tick info for the provided tick indices
     public fun fetch_provided_ticks(manager: &TickManager, ticks: vector<u32>): vector<TickInfo> {
        abort 0
     }
