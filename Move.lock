@@ -2,10 +2,19 @@
 
 [move]
 version = 3
-manifest_digest = "26AB81FD414A9295B3DF25F6FDD415C465A3ED385F33F5FAD201D73EA926F438"
-deps_digest = "3C4103934B1E040BB6B23F1D610B4EF9F2F1166A50A104EADCF77467C004C600"
+manifest_digest = "B2D70F227A3E71759AD1CC853656DFA7D274ACD1BE490142EE435AC70E581D3E"
+deps_digest = "060AD7E57DFB13104F21BE5F5C3759D03F0553FC3229247D9A7A6B45F50D03A3"
 dependencies = [
+  { id = "IntegerLibrary", name = "IntegerLibrary" },
   { id = "IntegerMate", name = "IntegerMate" },
+  { id = "Sui", name = "Sui" },
+]
+
+[[move.package]]
+id = "IntegerLibrary"
+source = { git = "https://github.com/fireflyprotocol/integer-library.git", rev = "v1.0.1", subdir = "" }
+
+dependencies = [
   { id = "Sui", name = "Sui" },
 ]
 

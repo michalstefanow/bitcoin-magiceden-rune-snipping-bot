@@ -1,12 +1,12 @@
 [package]
 name = "BluefinSpot"
 version = "1.0.0"
-published-at = "0x5b56670bd327ee6329c827bb5a0f9d3fa0f1afc06f96fd6badab79e022d96254"
+published-at = "0x67b34b728c4e28e704dcfecf7c5cf55c7fc593b6c65c20d1836d97c209c1928a"
 
 [dependencies]
 Sui = { git = "https://github.com/MystenLabs/sui.git", subdir = "crates/sui-framework/packages/sui-framework", rev = "mainnet-v1.35.2", override=true }
 IntegerMate = { git = "https://github.com/CetusProtocol/integer-mate.git", subdir = "sui", rev = "sui-v1.1.2" }
-IntegerLibrary = { git = "https://github.com/fireflyprotocol/integer-library.git", rev =  "sui-v1.0.1"}
+IntegerLibrary = { git = "https://github.com/fireflyprotocol/integer-library.git", rev =  "v1.0.1"}
 
 [addresses]
 bluefin_spot = "0x3492c874c1e3b3e2984e8c41b589e642d4d0a5d6459e5a9cfc2d52fd7c89c267"
