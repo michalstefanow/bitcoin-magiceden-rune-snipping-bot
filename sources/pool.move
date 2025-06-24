@@ -269,6 +269,70 @@ module bluefin_spot::pool {
             abort 0
     }
 
+
+    /// Allows caller to create a pool on Bluefin spot protocol and get the created pool in response
+    /// Any one can invoke the method to create a pool. Note that the creator can only specify
+    /// the fee bases points, the protocol fee % of the fee is fixed to 25% and can not be changed by the creator.
+    /// There is a fee to be paid for creation of a pool on bluefin protocol. You can use `config::get_pool_creation_fee_amount` 
+    /// to learn about the fee required.
+    /// 
+    /// Parameters:
+    /// - clock              : Sui clock object
+    /// - protocol_config    : Mutable reference to protocol's config object
+    /// - pool_name          : The name of the pool. The convention used on bluefin spot is `CoinA-CoinB` 
+    /// - icon_url      : The url to image to be shown on the position NFT of the pool (can be empty as well `""`)
+    /// - coin_a_symbol      : The symbol of coin A of the pool. The data is emitted and not stored on pool or the protocol
+    /// - coin_a_decimals    : The number of decimals the Coin A has. The data is emitted and not stored on pool or the protocol 
+    /// - coin_a_url         : The url of the coin A token metadata or icon or anything else a user creating the 
+    ///                        pool might be interested in getting as part of the pool creation event. 
+    ///                        The data is emitted and not stored on pool or the protocol
+    /// - coin_b_symbol      : The symbol of coin B of the pool. The data is emitted and not stored on pool or the protocol
+    /// - coin_b_decimals    : The number of decimals the Coin B has. The data is emitted and not stored on pool or the protocol
+    /// - coin_a_url         : The url of the coin A token metadata or icon or anything else a user creating the 
+    ///                        pool might be interested in getting as part of the pool creation event. 
+    ///                        The data is emitted and not stored on pool or the protocol
+    /// - tick_spacing       : An unsigned number representing the tick spacing supported by the pool
+    /// - fee_rate           : The amount of fee the pool charges per swap. The fee is represented 
+    ///                        in 1e6 format. 1 bips is 1e3, 2.5 bps is 2.5*1e3 and so on.
+    /// - current_sqrt_price : The starting sqrt price of the pool
+    /// - creation_fee       : The fee to be paid for creating a pool
+    /// - ctx                : Mutable reference to caller's transaction context
+    /// 
+    /// Events Emitted       : PoolCreated, PoolCreationFeePaid
+    /// 
+    /// Returns              : Pool Object
+    public fun create_pool_and_get_object<CoinTypeA, CoinTypeB, CoinTypeFee>(
+        clock: &Clock,
+        protocol_config: &mut GlobalConfig,
+        pool_name: vector<u8>, 
+        icon_url: vector<u8>,
+        coin_a_symbol: vector<u8>, 
+        coin_a_decimals: u8, 
+        coin_a_url: vector<u8>, 
+        coin_b_symbol: vector<u8>, 
+        coin_b_decimals: u8, 
+        coin_b_url: vector<u8>,     
+        tick_spacing: u32,
+        fee_rate: u64,
+        current_sqrt_price: u128,
+        creation_fee: Balance<CoinTypeFee>,
+        ctx: &mut TxContext): Pool<CoinTypeA, CoinTypeB> {
+            abort 0
+    }
+
+    /// Shares the pool object so it could be interacted by users to provide liquidity and perform swaps
+    /// Parameters:
+    /// - pool              : The Bluefin spot Pool object
+    /// 
+    /// Events Emitted       : PoolCreated, PoolCreationFeePaid
+    /// 
+    /// Returns              : Pool Object
+
+    public fun share_pool_object<CoinTypeA, CoinTypeB>(pool: Pool<CoinTypeA, CoinTypeB>) {
+        abort 0
+    }
+
+
     /// Allows caller to provide liquidity to a pool on exchange without specifying the 
     /// exact coin A or coin B amounts. 
     /// @notice The method does not performs slippage check. The caller must have those checks implemented on their end.abort
